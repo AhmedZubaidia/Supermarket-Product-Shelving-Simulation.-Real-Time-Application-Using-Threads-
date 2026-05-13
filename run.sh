@@ -1,12 +1,11 @@
 #!/bin/sh
+# ----------------------------------------------------------------------------
+# One-shot launcher: build every binary via the makefile, then start the
+# orchestrator. The orchestrator (`main`) execs the other binaries by
+# relative path, so they must sit alongside it in the repo root.
+# ----------------------------------------------------------------------------
 
+set -eu
 
-gcc -g -o main main.c
-gcc -g customer.c -o customer
-gcc -g drawer.c -o drawer -lglut -lGLU -lGL -lm -lpthread -lrt
-gcc -g timer.c -o timer
-gcc -g shelving_team.c -o shelving_team -lpthread -lrt
-
-
-
+make
 ./main

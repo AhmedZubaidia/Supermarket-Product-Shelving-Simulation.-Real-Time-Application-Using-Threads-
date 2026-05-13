@@ -1,13 +1,36 @@
-G = gcc -g
-O = -o
-names = main customer shelving_team
-thread_args = -lpthread -lrt
+# ---------------------------------------------------------------------------
+# Supermarket Product Shelving Simulation
+#
+# Builds five cooperating Unix processes. main.c orchestrates the simulation
+# and execs the four worker binaries (customer, drawer, shelving_team, timer)
+# via relative paths, so every binary must land in the repository root.
+# ---------------------------------------------------------------------------
 
-files:
-	$(G) main.c $(O) main
-	$(G) customer.c $(O) customer
-	$(G) shelving_team.c $(O) shelving_team $(thread_args)
+CC       := gcc
+CFLAGS   := -g -Wall -Iinclude
+PTHREAD  := -lpthread -lrt
+GL_LIBS  := -lglut -lGLU -lGL -lm $(PTHREAD)
 
+BINS     := main customer drawer timer shelving_team
+
+.PHONY: all clean
+
+all: $(BINS)
+
+main: src/main.c
+	$(CC) $(CFLAGS) $< -o $@
+
+customer: src/customer.c
+	$(CC) $(CFLAGS) $< -o $@
+
+drawer: src/drawer.c
+	$(CC) $(CFLAGS) $< -o $@ $(GL_LIBS)
+
+timer: src/timer.c
+	$(CC) $(CFLAGS) $< -o $@
+
+shelving_team: src/shelving_team.c
+	$(CC) $(CFLAGS) $< -o $@ $(PTHREAD)
 
 clean:
-	rm -f $(names)
+	rm -f $(BINS)
